@@ -53,7 +53,7 @@ export function App() {
     }, 3000);
   }
   // 定义一个回调函数来处理 DOM 变化
-  function handleMutations(mutationsList) {
+  function handleMutations(mutationsList: MutationRecord[]) {
     for (let mutation of mutationsList) {
       if (mutation.type === 'childList') {
         const elements = document.querySelectorAll('.knife4j-api-copy-address');

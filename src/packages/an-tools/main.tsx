@@ -1,11 +1,17 @@
 import { render } from 'preact';
-import '../../style.css';
 import { App } from './app';
 render(
   <App />,
   (() => {
-    const app = document.createElement('div');
-    document.body.append(app);
-    return app;
+    const container = document.createElement("div");
+    container.id = "shadowContainer";
+
+    //创建shadowdom
+    const shadowDom = container.attachShadow({ mode: "open" });
+    const root = document.createElement("div");
+    shadowDom.appendChild(root);
+    //把dom附加到body去
+    document.body.appendChild(container);
+    return root
   })(),
 );
