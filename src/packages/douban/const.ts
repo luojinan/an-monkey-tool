@@ -1,4 +1,4 @@
-export const filterCommentText = /(d{2,})|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)|(^\d+$)/gi // 过滤2个以上的d和谢谢
+export const filterCommentText = /(d{2,})|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi
 
 export const NOT_NEED_LIST = [
   "日抛",

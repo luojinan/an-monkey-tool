@@ -48,7 +48,7 @@ function extractRichTextContent(element: Element): string {
         // 如果是 <a> 元素，处理链接
         const href: string = node.getAttribute('href');
         const innerText = node.textContent.trim();
-        if (href && innerText && !href.startsWith('https://www.douban.com/link2')) {
+        if (href && innerText && !href.startsWith('https://www.douban.com/link2') && innerText !== href) {
           content += `[${innerText}](${href})`;
         } else {
           content += innerText
@@ -72,16 +72,13 @@ export function App() {
     {
       title: '🔵 复制作业内容',
       onClick: () => {
-        // 从className为topic-content的dom中提取文本内容，注意不需要js等内容，只要文本和图片和换行，添加到剪贴板
-
-        // 使用示例
         const richTextElement = document.querySelector('.topic-richtext');
         if (richTextElement) {
           const richTextContent = extractRichTextContent(richTextElement);
 
           const title = document.querySelector('.article h1')?.textContent?.trim();
           console.log('提取的富文本内容：', richTextContent);
-          navigator.clipboard.writeText(`${removeQueryParam(location.href, '_i')}\n\n${title}${richTextContent}`)
+          navigator.clipboard.writeText(`${location.host}${location.pathname}\n${title}${richTextContent}`)
 
           setShowToast(true)
           setTimeout(() => {
@@ -89,7 +86,7 @@ export function App() {
           }, 3000);
         }
       }
-    }, // 填写oss 信息，后存储到本地，支持上传
+    },
     {
       title: '🟢 打开豆瓣APP',
       onClick: () => {
@@ -163,7 +160,16 @@ export function App() {
     let localCount = 0;
     document.querySelectorAll('.reply-content').forEach((item) => {
       const dom = item as HTMLElement;
-      const content = dom.innerText.replace(filterCommentText, '');
+      let content = dom.innerText.replace(filterCommentText, '');
+      // 定义用于移除首字符为标点符号的正则表达式
+      const removeLeadingPunctuation = /^[.,!?;:“”‘’"…—，]+/;
+      // 定义用于移除尾字符为标点符号的正则表达式
+      const removeTrailingPunctuation = /[.,!?;:“”‘’"…—，]+$/;
+      // 移除首字符为标点符号的部分
+      content = content.replace(removeLeadingPunctuation, '');
+      // 移除尾字符为标点符号的部分
+      content = content.replace(removeTrailingPunctuation, '');
+
       if (!content || ['d', 'D', '牛', '，', ','].includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
@@ -190,10 +196,11 @@ export function App() {
     const qaData = getUrlParams('qa') as string | null;
     if (qaData) {
       const res = JSON.parse(qaData) as { question: string; answer: string }[];
-      setQaList(res);
+      const list = res.filter(item => !['dd'].includes(item.answer))
+      setQaList(list);
 
       setTimeout(() => {
-        const qaHtml = res
+        const qaHtml = list
           .map((item) => `
             <div style="padding: 10px;margin-bottom: 10px;border: 1px solid #ccc;border-radius: 5px;">
               <div style="user-select: text;margin-bottom:10px;color: #333">🔮: ${item.question}</div>
