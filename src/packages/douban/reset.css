@@ -1,3 +1,31 @@
 .tabs {
   margin: unset;
 }
+
+.topic-reply .reply-content {
+  margin-bottom: 0;
+}
+
+.pil {
+  border-radius: 50%;
+}
+
+.topic-content .user-face {
+  float: unset;
+  display: flex;
+  width: unset;
+  height: unset;
+}
+
+.topic-reply .user-face {
+  width: 36px;
+  height: 36px;
+  margin-right: 10px;
+}
+.topic-reply .user-face .pil {
+  width: 36px;
+  height: 36px;
+}
+.operation-div {
+  display: none;
+}

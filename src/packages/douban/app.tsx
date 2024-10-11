@@ -125,6 +125,26 @@ export function App() {
       doc.style.padding = '10px';
       doc.style.boxSizing = 'border-box';
     }
+
+    // 获取 className 为 topic-doc 的元素
+    const topicDoc = document.querySelector('.topic-doc');
+
+    // 获取 topic-doc 内的 h3 元素
+    const h3Element = topicDoc?.querySelector('h3');
+
+    // 获取 className 为 user-face 的 div 元素
+    const userFaceDiv = document.querySelector('.user-face');
+
+    // 检查 h3 元素是否存在
+    if (h3Element) {
+      // 将 h3 元素从当前父元素中移除
+      topicDoc?.removeChild(h3Element);
+
+      // 将 h3 元素添加到 user-face 的 div 元素内部
+      userFaceDiv?.appendChild(h3Element);
+    } else {
+      console.log('没有找到 h3 元素');
+    }
   };
 
   const removeAd = () => {
@@ -188,7 +208,7 @@ export function App() {
 
         const strList = ['.question-wrapper', '.poll-wrapper'];
         removeDomByList(strList);
-      }, 0);
+      }, 300);
     }
   };
 

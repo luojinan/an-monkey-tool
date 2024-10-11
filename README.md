@@ -80,3 +80,18 @@ export default defineConfig({
 ## publish
 
 [auto build actions](https://blog.yunyuyuan.net/articles/2064)
+
+## 脚本
+
+### xianbao
+
+[发布站](https://www.xianbaoku.net/)
+
+```text
+线报酷发布页！
+自己复制新链接打开，http://new.xianbao.fun/ 或 http://news.xianbao.fun/
+无法打开时可以使用这个：http://new.ixbk.net/ 或 http://news.ixbk.net/
+无法使用也可以可以使用这个：http://new.ixbk.fun/ 或 http://news.ixbk.fun/
+微信：xianbao_fun 微博：线报酷官方
+当前网址域名即将失效，请保存最新网址！
+```
