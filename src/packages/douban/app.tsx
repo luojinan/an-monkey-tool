@@ -3,6 +3,26 @@ import { getUrlParams, removeDomByList } from '../../common/utils';
 import styles from "../../style.css?inline";
 import type { MenuItem } from "../an-tools/app";
 import { filterCommentText } from "./const";
+
+function removeQueryParam(url: string, paramToRemove: string) {
+  // 创建一个 URL 对象
+  const urlObj = new URL(url);
+
+  // 获取查询参数对象
+  const params = new URLSearchParams(urlObj.search);
+
+  // 检查并移除指定的查询参数
+  if (params.has(paramToRemove)) {
+    params.delete(paramToRemove);
+  }
+
+  // 重新构建 URL
+  urlObj.search = params.toString();
+
+  // 返回处理后的 URL
+  return urlObj.href;
+}
+
 function extractRichTextContent(element: Element): string {
   let content = '';
 
@@ -61,7 +81,7 @@ export function App() {
 
           const title = document.querySelector('.article h1')?.textContent?.trim();
           console.log('提取的富文本内容：', richTextContent);
-          navigator.clipboard.writeText(`${title}${richTextContent}`)
+          navigator.clipboard.writeText(`${removeQueryParam(location.href, '_i')}\n\n${title}${richTextContent}`)
 
           setShowToast(true)
           setTimeout(() => {
@@ -73,9 +93,8 @@ export function App() {
     {
       title: '🟢 打开豆瓣APP',
       onClick: () => {
-        // 获取当前url链接，把www.替换为m. 打开新标签页
-        const url = location.href;
-        const newUrl = url.replace('www.', 'm.');
+        const { host, pathname } = location
+        const newUrl = `douban://${host.replace('www.', '')}${pathname}`
         window.open(newUrl);
       }
     },
