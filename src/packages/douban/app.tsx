@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { getUrlParams, removeDomByList } from '../../common/utils';
 import styles from "../../style.css?inline";
 import type { MenuItem } from "../an-tools/app";
-import { filterCommentText } from "./const";
+import { filterCommentText, sbCodeMap } from "./const";
 
 function removeQueryParam(url: string, paramToRemove: string) {
   // 创建一个 URL 对象
@@ -40,10 +40,11 @@ function extractRichTextContent(element: Element): string {
         content += extractRichTextContent(node as Element);
       } else if (tagName === 'img') {
         // 如果是 <img> 元素，添加图片 URL
-        const src = node.getAttribute('src');
-        if (src) {
-          content += `[图片](${src})\n`;
-        }
+        content += ''
+        // const src = node.getAttribute('src');
+        // if (src) {
+        // content += `[图片](${src})\n`;
+        // }
       } else if (tagName === 'a') {
         // 如果是 <a> 元素，处理链接
         const href: string = node.getAttribute('href');
@@ -53,6 +54,8 @@ function extractRichTextContent(element: Element): string {
         } else {
           content += innerText
         }
+        // 货号链接 TODO:
+
       } else {
         // 对其他元素进行递归处理
         content += extractRichTextContent(node as Element);
@@ -78,7 +81,7 @@ export function App() {
 
           const title = document.querySelector('.article h1')?.textContent?.trim();
           console.log('提取的富文本内容：', richTextContent);
-          navigator.clipboard.writeText(`${location.host}${location.pathname}\n${title}${richTextContent}`)
+          navigator.clipboard.writeText(`${location.host}${location.pathname}\n\n${title?.replace('作业｜【作业】', '')}${richTextContent}`)
 
           setShowToast(true)
           setTimeout(() => {
@@ -170,7 +173,7 @@ export function App() {
       // 移除尾字符为标点符号的部分
       content = content.replace(removeTrailingPunctuation, '');
 
-      if (!content || ['d', 'D', '牛', '，', ','].includes(content)) {
+      if (!content || ['d', 'D', '牛', '，', ',', '马'].includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
       } else {
@@ -188,15 +191,22 @@ export function App() {
   };
 
   const str2atag = (str: string) => {
-    const regex = /https?:\/\/\S+/gi;
-    return str.replace(regex, (match) => `<a href="${match}" target="_blank">${match}</a>`);
+    var regex = /\b\d{6,}\b/g;
+    Object.keys(sbCodeMap).forEach(function (key) {
+      // 检查p标签的内容中是否包含字典的键
+      if (!str.includes('http') && str.includes(key)) {
+        // 使用字典的值替换掉匹配的文本
+        str = str.replace(new RegExp(key, 'g'), `${key}(${sbCodeMap[key]})`);
+      }
+    });
+    return str.replace(regex, (match) => `${match}<a href="https://item.jd.com/${match}.html" target="_blank"> ✨京东链接</a>`);
   };
 
   const setQa = () => {
     const qaData = getUrlParams('qa') as string | null;
     if (qaData) {
       const res = JSON.parse(qaData) as { question: string; answer: string }[];
-      const list = res.filter(item => !['dd'].includes(item.answer))
+      const list = res.filter(item => !['dd'].includes(item.answer.toLowerCase()))
       setQaList(list);
 
       setTimeout(() => {
@@ -219,6 +229,53 @@ export function App() {
     }
   };
 
+  const replaceJdNum2Link = () => {
+    const contentDiv = document.querySelector('.rich-content');
+    if (contentDiv) {
+      // 获取所有的p标签
+      var paragraphs = contentDiv.querySelectorAll('p');
+      paragraphs.forEach(function (p) {
+        // 使用正则表达式匹配6位或更多的纯数字货号
+        var regex = /\b\d{6,}\b/g;
+        // 替换货号为a标签
+        p.innerHTML = p.innerHTML.replace(regex, function (match) {
+          return `${match}<a href="https://item.jd.com/${match}.html" target="_blank"> ✨京东链接</a>`
+        });
+
+        // 遍历字典中的每个键值对
+        Object.keys(sbCodeMap).forEach(function (key) {
+          // 检查p标签的内容中是否包含字典的键
+          if (!p.textContent?.includes('http') && p.textContent?.includes(key)) {
+            // 使用字典的值替换掉匹配的文本
+            p.textContent = p.textContent.replace(new RegExp(key, 'g'), `${key}(${sbCodeMap[key]})`);
+          }
+        });
+      });
+
+      // 获取所有的a标签
+      var links = document.querySelectorAll('a');
+      links.forEach(function (link) {
+        // 检查href属性是否以指定的URL开头
+        if (link.href.startsWith('https://www.douban.com/link2/?url=')) {
+          // 使用URL API解析URL
+          var url = new URL(link.href);
+          // 使用URLSearchParams API获取参数
+          var urlParams = new URLSearchParams(url.search);
+          // 提取url参数
+          var encodedUrl = urlParams.get('url');
+          if (encodedUrl) {
+            // 解码URL参数
+            var decodedUrl = decodeURIComponent(encodedUrl);
+            // 更新href属性
+            link.href = decodedUrl;
+            // 可以在控制台中输出以确认更改
+            console.log('Updated link:', link.href);
+          }
+        }
+      });
+    }
+  }
+
   useEffect(() => {
     console.log('✨ douban-group 脚本 ✨');
     fixPhone();
@@ -226,6 +283,7 @@ export function App() {
     setQa();
     const removedComments = removeComment();
     setCount(removedComments);
+    replaceJdNum2Link()
   }, []); // Empty dependency array to run once on mount
 
   return (
