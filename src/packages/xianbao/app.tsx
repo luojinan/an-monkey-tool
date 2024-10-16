@@ -36,7 +36,6 @@ export function App() {
   };
 
   const refreshList = (filterList) => {
-    console.log('过滤', count)
     const zoyeList = document.querySelectorAll('.article-list .title a');
     let num = count
     if (zoyeList.length) {
@@ -45,12 +44,11 @@ export function App() {
         const isNoNeed = filterList.some(({ name }) => item.textContent.includes(name));
         if (isNoNeed) {
           num += 1;
-          console.log('过滤', item.textContent)
+          // console.log('过滤', item.textContent)
           item.closest('.article-list')?.remove();
         }
       });
     }
-    console.log('过滤', num)
     setCount(num); // 没有set成功？ 不能在子组件中调用父组件的state修改吗？
   }
 

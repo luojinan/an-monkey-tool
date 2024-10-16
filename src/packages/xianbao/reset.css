@@ -6,3 +6,11 @@
 .header {
   z-index: unset;
 }
+
+.listbox .newer {
+  display: none;
+}
+
+.pull-right {
+  display: none;
+}

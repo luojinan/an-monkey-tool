@@ -17,13 +17,14 @@ const Blacklist = ({ onRefreshList }) => {
   useEffect(() => {
     if (initialData.length === 0) {
       setBlacklist(NOT_NEED_LIST.map(item => ({ name: item, disabled: false })))
+      return
     }
-    onRefreshList(blacklist.filter(item => !item.disabled))
   }, [])
 
   // 实时存储输入框数据到 localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(blacklist));
+    console.log('useEffect blacklist')
     onRefreshList(blacklist.filter(item => !item.disabled))
   }, [blacklist]);
 
@@ -55,12 +56,12 @@ const Blacklist = ({ onRefreshList }) => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">不感兴趣关键字</h1>
-      <p>用于过滤不想看的作业，修改实时保存，刷新页面即可</p>
+      <p>用于过滤不想看的作业，修改实时保存并过滤，不需要刷新</p>
       <div className="flex items-center mb-6 mt-1">
         <input
           type="text"
           className="input input-bordered w-full max-w-xs"
-          placeholder="输入后点击添加生效"
+          placeholder="输入后点击右侧"
           value={newEntry}
           onChange={(e) => setNewEntry(e.target.value)}
         />
