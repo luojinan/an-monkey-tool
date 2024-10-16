@@ -4,25 +4,6 @@ import styles from "../../style.css?inline";
 import type { MenuItem } from "../an-tools/app";
 import { filterCommentText, sbCodeMap } from "./const";
 
-function removeQueryParam(url: string, paramToRemove: string) {
-  // 创建一个 URL 对象
-  const urlObj = new URL(url);
-
-  // 获取查询参数对象
-  const params = new URLSearchParams(urlObj.search);
-
-  // 检查并移除指定的查询参数
-  if (params.has(paramToRemove)) {
-    params.delete(paramToRemove);
-  }
-
-  // 重新构建 URL
-  urlObj.search = params.toString();
-
-  // 返回处理后的 URL
-  return urlObj.href;
-}
-
 function extractRichTextContent(element: Element): string {
   let content = '';
 
@@ -54,8 +35,6 @@ function extractRichTextContent(element: Element): string {
         } else {
           content += innerText
         }
-        // 货号链接 TODO:
-
       } else {
         // 对其他元素进行递归处理
         content += extractRichTextContent(node as Element);
@@ -70,24 +49,30 @@ export function App() {
   const [count, setCount] = useState<number>(0);
   const [qaList, setQaList] = useState<{ question: string; answer: string }[]>([]);
   const [showToast, setShowToast] = useState(false);
+  const [content, setContent] = useState('');
 
   const menuList: MenuItem[] = [
     {
+      title: '🔴 复制作业标题(链接)',
+      onClick: () => {
+        const title = document.querySelector('.article h1')?.textContent?.trim();
+        navigator.clipboard.writeText(`${title?.replace('作业｜【作业】', '')}（${location.host}${location.pathname}）`)
+
+        setShowToast(true)
+        setTimeout(() => {
+          setShowToast(false)
+        }, 3000);
+      }
+    },
+    {
       title: '🔵 复制作业内容',
       onClick: () => {
-        const richTextElement = document.querySelector('.topic-richtext');
-        if (richTextElement) {
-          const richTextContent = extractRichTextContent(richTextElement);
+        navigator.clipboard.writeText(content)
 
-          const title = document.querySelector('.article h1')?.textContent?.trim();
-          console.log('提取的富文本内容：', richTextContent);
-          navigator.clipboard.writeText(`${location.host}${location.pathname}\n\n${title?.replace('作业｜【作业】', '')}${richTextContent}`)
-
-          setShowToast(true)
-          setTimeout(() => {
-            setShowToast(false)
-          }, 3000);
-        }
+        setShowToast(true)
+        setTimeout(() => {
+          setShowToast(false)
+        }, 3000);
       }
     },
     {
@@ -276,6 +261,18 @@ export function App() {
     }
   }
 
+  const onBtn = () => {
+    const richTextElement = document.querySelector('.topic-richtext');
+    if (richTextElement) {
+      const richTextContent = extractRichTextContent(richTextElement);
+
+      const title = document.querySelector('.article h1')?.textContent?.trim();
+      console.log('提取的富文本内容：', richTextContent);
+      const text = `${location.host}${location.pathname}\n\n${title?.replace('作业｜【作业】', '')}${richTextContent}`
+      setContent(text)
+    }
+  }
+
   useEffect(() => {
     console.log('✨ douban-group 脚本 ✨');
     fixPhone();
@@ -292,11 +289,12 @@ export function App() {
       <div className="drawer drawer-end" style={{ 'zIndex': 1 }}>
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="fixed right-2 bottom-5">
-          <label htmlFor="my-drawer" className="btn btn-primary drawer-button">✨ 已移除无效评论{count}条</label>
+          <label htmlFor="my-drawer" className="btn btn-primary drawer-button" onClick={onBtn}>✨ 已移除无效评论{count}条</label>
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
           <ul className="menu bg-base-200 text-base-content min-h-full w-4/5 p-4">
+            <div class="card py-2 mb-4 shadow-md rounded-box whitespace-pre-wrap">{content}</div>
             {
               menuList.map(item => <button key={item.title} className="btn btn-primary w-full mb-2" onClick={item?.onClick}>{item.title}</button>)
             }
