@@ -11,7 +11,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" .article-list .title a{text-decoration:none;white-space:unset}.header{z-index:unset}.listbox .newer{display:none} ");
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" .article-list .title a{text-decoration:none;white-space:unset}.header{z-index:unset}.listbox .newer,.pull-right{display:none} ");
 
 (function (preact) {
   'use strict';
@@ -220,7 +220,7 @@
           {
             type: "text",
             className: "input input-bordered w-full max-w-xs",
-            placeholder: "输入后点击添加生效",
+            placeholder: "输入后点击右侧",
             value: newEntry,
             onChange: (e2) => setNewEntry(e2.target.value)
           }
@@ -274,7 +274,6 @@
       (_c = document.querySelector(".art-copyright a")) == null ? void 0 : _c.setAttribute("target", "_self");
     };
     const refreshList = (filterList) => {
-      console.log("过滤", count);
       const zoyeList = document.querySelectorAll(".article-list .title a");
       let num = count;
       if (zoyeList.length) {
@@ -284,12 +283,10 @@
           const isNoNeed = filterList.some(({ name }) => item.textContent.includes(name));
           if (isNoNeed) {
             num += 1;
-            console.log("过滤", item.textContent);
             (_a = item.closest(".article-list")) == null ? void 0 : _a.remove();
           }
         });
       }
-      console.log("过滤", num);
       setCount(num);
     };
     _(() => {
