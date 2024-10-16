@@ -173,7 +173,7 @@ export function App() {
       // 移除尾字符为标点符号的部分
       content = content.replace(removeTrailingPunctuation, '');
 
-      if (!content || ['d', 'D', '牛', '，', ',', '马'].includes(content)) {
+      if (!content || ['d', 'D', '牛', '，', ',', '马', '天才'].includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
       } else {
@@ -189,7 +189,6 @@ export function App() {
       firstRenderedElement.parentElement.insertBefore(newElement, firstRenderedElement);
     }
   };
-
   const str2atag = (str: string) => {
     var regex = /\b\d{6,}\b/g;
     Object.keys(sbCodeMap).forEach(function (key) {
@@ -198,6 +197,7 @@ export function App() {
         // 使用字典的值替换掉匹配的文本
         str = str.replace(new RegExp(key, 'g'), `${key}(${sbCodeMap[key]})`);
       }
+      // TODO: 答案中的返利链接提醒-插入a标签，提供清理和提取货号
     });
     return str.replace(regex, (match) => `${match}<a href="https://item.jd.com/${match}.html" target="_blank"> ✨京东链接</a>`);
   };
@@ -236,7 +236,7 @@ export function App() {
       var paragraphs = contentDiv.querySelectorAll('p');
       paragraphs.forEach(function (p) {
         // 使用正则表达式匹配6位或更多的纯数字货号
-        var regex = /\b\d{6,}\b/g;
+        var regex = /\b\d{12,}\b/g;
         // 替换货号为a标签
         p.innerHTML = p.innerHTML.replace(regex, function (match) {
           return `${match}<a href="https://item.jd.com/${match}.html" target="_blank"> ✨京东链接</a>`
@@ -245,7 +245,7 @@ export function App() {
         // 遍历字典中的每个键值对
         Object.keys(sbCodeMap).forEach(function (key) {
           // 检查p标签的内容中是否包含字典的键
-          if (!p.textContent?.includes('http') && p.textContent?.includes(key)) {
+          if (!p.textContent?.includes('http') && !p.textContent?.includes('.com') && p.textContent?.includes(key)) {
             // 使用字典的值替换掉匹配的文本
             p.textContent = p.textContent.replace(new RegExp(key, 'g'), `${key}(${sbCodeMap[key]})`);
           }
