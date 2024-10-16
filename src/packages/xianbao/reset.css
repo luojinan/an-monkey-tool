@@ -1,0 +1,8 @@
+.article-list .title a {
+  text-decoration: none;
+  white-space: unset;
+}
+
+.header {
+  z-index: unset;
+}

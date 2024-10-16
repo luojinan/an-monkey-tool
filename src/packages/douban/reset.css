@@ -29,3 +29,7 @@
 .operation-div {
   display: none;
 }
+
+.reply-quote {
+  width: unset;
+}
