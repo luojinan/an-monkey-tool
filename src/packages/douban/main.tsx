@@ -1,8 +1,9 @@
 import { render } from 'preact';
+import ToastProvider from '../../common/components/ToastProvider';
 import { App } from './app';
 import './reset.css';
 render(
-  <App />,
+  <ToastProvider><App /></ToastProvider>,
   (() => {
     const container = document.createElement("div");
     container.id = "shadowContainer";

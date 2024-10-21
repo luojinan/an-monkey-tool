@@ -1,8 +1,9 @@
 import { useEffect, useState } from "preact/hooks";
+import { useToast } from "../../common/components/ToastProvider";
 import { getUrlParams, removeDomByList } from '../../common/utils';
-import styles from "../../style.css?inline";
 import type { MenuItem } from "../an-tools/app";
 import { filterCommentText, sbCodeMap } from "./const";
+import { fixPhone, removeAd, resetOutsideDoubanLink } from "./utils";
 
 function extractRichTextContent(element: Element): string {
   let content = '';
@@ -48,8 +49,9 @@ function extractRichTextContent(element: Element): string {
 export function App() {
   const [count, setCount] = useState<number>(0);
   const [qaList, setQaList] = useState<{ question: string; answer: string }[]>([]);
-  const [showToast, setShowToast] = useState(false);
   const [content, setContent] = useState('');
+
+  const { showToast } = useToast();
 
   const menuList: MenuItem[] = [
     {
@@ -58,10 +60,7 @@ export function App() {
         const title = document.querySelector('.article h1')?.textContent?.trim();
         navigator.clipboard.writeText(`${title?.replace('作业｜【作业】', '')}（${location.host}${location.pathname}）`)
 
-        setShowToast(true)
-        setTimeout(() => {
-          setShowToast(false)
-        }, 3000);
+        showToast('🎉 复制成功，去粘贴吧～');
       }
     },
     {
@@ -69,10 +68,7 @@ export function App() {
       onClick: () => {
         navigator.clipboard.writeText(content)
 
-        setShowToast(true)
-        setTimeout(() => {
-          setShowToast(false)
-        }, 3000);
+        showToast('🎉 复制成功，去粘贴吧～');
       }
     },
     {
@@ -84,65 +80,6 @@ export function App() {
       }
     },
   ]
-  const fixPhone = () => {
-    const body = document.querySelector('body');
-    if (body) {
-      body.style.boxSizing = 'border-box';
-      body.style.width = '100vw';
-      body.style.maxWidth = '800px';
-      body.style.padding = '10px 10px 0 10px';
-    }
-
-    const topicContent = document.querySelector('.topic-content') as HTMLElement | null;
-    if (topicContent) {
-      topicContent.style.display = 'flex';
-      topicContent.style.flexDirection = 'column';
-    }
-
-    const wrapper = document.getElementById('wrapper');
-    if (wrapper) {
-      wrapper.style.width = '100%';
-    }
-
-    const doc = document.querySelector('.topic-doc') as HTMLElement | null;
-    if (doc) {
-      doc.style.width = '100%';
-      doc.style.padding = '10px';
-      doc.style.boxSizing = 'border-box';
-    }
-
-    // 获取 className 为 topic-doc 的元素
-    const topicDoc = document.querySelector('.topic-doc');
-
-    // 获取 topic-doc 内的 h3 元素
-    const h3Element = topicDoc?.querySelector('h3');
-
-    // 获取 className 为 user-face 的 div 元素
-    const userFaceDiv = document.querySelector('.user-face');
-
-    // 检查 h3 元素是否存在
-    if (h3Element) {
-      // 将 h3 元素从当前父元素中移除
-      topicDoc?.removeChild(h3Element);
-
-      // 将 h3 元素添加到 user-face 的 div 元素内部
-      userFaceDiv?.appendChild(h3Element);
-    } else {
-      console.log('没有找到 h3 元素');
-    }
-  };
-
-  const removeAd = () => {
-    const contentDiv = document.getElementById('content');
-    const articleDiv = document.querySelector('.article');
-
-    if (articleDiv && contentDiv) {
-      contentDiv.appendChild(articleDiv);
-    }
-
-    const strList = ['.grid-16-8', '.sns-bar', '#db-nav-group', '#db-global-nav', '.comment-form', '#footer', '#landing-bar', '.txd', '.topic-opt', '#link-report_group'];
-    removeDomByList(strList);
-  };
 
   const removeComment = () => {
     let localCount = 0;
@@ -158,7 +95,7 @@ export function App() {
       // 移除尾字符为标点符号的部分
       content = content.replace(removeTrailingPunctuation, '');
 
-      if (!content || ['d', 'D', '牛', '，', ',', '马', '天才'].includes(content)) {
+      if (!content || ['d', 'D', '牛', '，', ',', '。', '马', '天才', '🐎', '码'].includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
       } else {
@@ -221,7 +158,7 @@ export function App() {
       var paragraphs = contentDiv.querySelectorAll('p');
       paragraphs.forEach(function (p) {
         // 使用正则表达式匹配6位或更多的纯数字货号
-        var regex = /\b\d{12,}\b/g;
+        var regex = /\b10\d{10,}(?!\.html)\b/g;
         // 替换货号为a标签
         p.innerHTML = p.innerHTML.replace(regex, function (match) {
           return `${match}<a href="https://item.jd.com/${match}.html" target="_blank"> ✨京东链接</a>`
@@ -235,28 +172,6 @@ export function App() {
             p.textContent = p.textContent.replace(new RegExp(key, 'g'), `${key}(${sbCodeMap[key]})`);
           }
         });
-      });
-
-      // 获取所有的a标签
-      var links = document.querySelectorAll('a');
-      links.forEach(function (link) {
-        // 检查href属性是否以指定的URL开头
-        if (link.href.startsWith('https://www.douban.com/link2/?url=')) {
-          // 使用URL API解析URL
-          var url = new URL(link.href);
-          // 使用URLSearchParams API获取参数
-          var urlParams = new URLSearchParams(url.search);
-          // 提取url参数
-          var encodedUrl = urlParams.get('url');
-          if (encodedUrl) {
-            // 解码URL参数
-            var decodedUrl = decodeURIComponent(encodedUrl);
-            // 更新href属性
-            link.href = decodedUrl;
-            // 可以在控制台中输出以确认更改
-            console.log('Updated link:', link.href);
-          }
-        }
       });
     }
   }
@@ -278,14 +193,15 @@ export function App() {
     fixPhone();
     removeAd();
     setQa();
+
     const removedComments = removeComment();
     setCount(removedComments);
+    resetOutsideDoubanLink()
     replaceJdNum2Link()
-  }, []); // Empty dependency array to run once on mount
+  }, []);
 
   return (
     <>
-      <style>{styles}</style>
       <div className="drawer drawer-end" style={{ 'zIndex': 1 }}>
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="fixed right-2 bottom-5">
@@ -301,12 +217,6 @@ export function App() {
           </ul>
         </div>
       </div >
-
-      <div className="toast toast-center z-10">
-        <div className={`alert alert-success text-white ${showToast ? '' : 'hidden'}`}>
-          <span>🎉 复制成功，去粘贴吧～</span>
-        </div>
-      </div>
     </>
   );
 };
