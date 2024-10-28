@@ -14,3 +14,7 @@
 .pull-right {
   display: none;
 }
+
+.mask-hidden {
+  z-index: unset;
+}

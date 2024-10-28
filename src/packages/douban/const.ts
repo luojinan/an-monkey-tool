@@ -1,4 +1,5 @@
-export const filterCommentText = /(d{2,})|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi
+export const filterCommentText =
+  /(d{2,})|did|Did|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi;
 
 export const NOT_NEED_LIST = [
   "日抛",
@@ -24,21 +25,22 @@ export const NOT_NEED_LIST = [
   "面膜",
   "气垫",
   "双萃",
-  "双抗"
+  "双抗",
 ];
 
 export const sbCodeMap = {
-  'jd': '京东',
-  'xcx': '小程序',
-  'tb': '淘宝',
-  'zbj': '直播间',
-  'fl': '返利',
-  'jf': '京粉',
-  'lm': '联盟',
-  'yxj': '摇现金',
-  '饭粒': '返利',
-  'zdm': '值得买',
-  'ljq': '李佳琦',
-  '张大妈': '值得买',
-  '🍚': '返利'
+  jd: "京东",
+  xcx: "小程序",
+  tb: "淘宝",
+  zbj: "直播间",
+  fl: "返利",
+  jf: "京粉",
+  lm: "联盟",
+  yxj: "摇现金",
+  饭粒: "返利",
+  zdm: "值得买",
+  ljq: "李佳琦",
+  张大妈: "值得买",
+  xyk: "信用卡",
+  "🍚": "返利",
 };

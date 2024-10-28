@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         豆瓣小组增强
 // @namespace    npm/vite-plugin-monkey
-// @version      1.0.6
+// @version      1.0.7
 // @author       monkey
 // @description  过滤无效评论，优化PC网页样式
 // @icon         https://img1.doubanio.com/favicon.ico
@@ -187,20 +187,21 @@
       (_a = document.querySelectorAll(item)) == null ? void 0 : _a.forEach((item2) => item2.remove());
     });
   }
-  const filterCommentText = /(d{2,})|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi;
+  const filterCommentText = /(d{2,})|did|Did|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi;
   const sbCodeMap = {
-    "jd": "京东",
-    "xcx": "小程序",
-    "tb": "淘宝",
-    "zbj": "直播间",
-    "fl": "返利",
-    "jf": "京粉",
-    "lm": "联盟",
-    "yxj": "摇现金",
-    "饭粒": "返利",
-    "zdm": "值得买",
-    "ljq": "李佳琦",
-    "张大妈": "值得买",
+    jd: "京东",
+    xcx: "小程序",
+    tb: "淘宝",
+    zbj: "直播间",
+    fl: "返利",
+    jf: "京粉",
+    lm: "联盟",
+    yxj: "摇现金",
+    饭粒: "返利",
+    zdm: "值得买",
+    ljq: "李佳琦",
+    张大妈: "值得买",
+    xyk: "信用卡",
     "🍚": "返利"
   };
   const fixPhone = () => {
@@ -369,7 +370,7 @@
       const qaData = getUrlParams("qa");
       if (qaData) {
         const res = JSON.parse(qaData);
-        const list = res.filter((item) => !["dd"].includes(item.answer.toLowerCase()));
+        const list = res.filter((item) => !["dd", "d"].includes(item.answer.toLowerCase()));
         setQaList(list);
         setTimeout(() => {
           const qaHtml = list.map((item) => `

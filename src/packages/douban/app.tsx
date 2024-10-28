@@ -128,7 +128,7 @@ export function App() {
     const qaData = getUrlParams('qa') as string | null;
     if (qaData) {
       const res = JSON.parse(qaData) as { question: string; answer: string }[];
-      const list = res.filter(item => !['dd'].includes(item.answer.toLowerCase()))
+      const list = res.filter(item => !['dd', 'd'].includes(item.answer.toLowerCase()))
       setQaList(list);
 
       setTimeout(() => {

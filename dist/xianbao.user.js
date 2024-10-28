@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         线报增强
 // @namespace    npm/vite-plugin-monkey
-// @version      1.0.0
+// @version      1.0.1
 // @author       monkey
 // @description  过滤无效评论，移除广告，移除不感兴趣作业，优化跳转
 // @icon         http://new.xianbao.fun/favicon.ico
@@ -11,7 +11,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" .article-list .title a{text-decoration:none;white-space:unset}.header{z-index:unset}.listbox .newer,.pull-right{display:none} ");
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" .article-list .title a{text-decoration:none;white-space:unset}.header{z-index:unset}.listbox .newer,.pull-right{display:none}.mask-hidden{z-index:unset} ");
 
 (function (preact) {
   'use strict';
