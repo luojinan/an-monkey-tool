@@ -42,5 +42,7 @@ export const sbCodeMap = {
   ljq: "李佳琦",
   张大妈: "值得买",
   xyk: "信用卡",
+  ysf: "云闪付",
+  zfb: "支付宝",
   "🍚": "返利",
 };

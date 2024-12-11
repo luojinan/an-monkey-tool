@@ -95,7 +95,7 @@ export function App() {
       // 移除尾字符为标点符号的部分
       content = content.replace(removeTrailingPunctuation, '');
 
-      if (!content || ['d', 'D', '牛', '，', ',', '。', '马', '天才', '🐎', '码'].includes(content)) {
+      if (!content || ['d', 'D', '牛', '，', ',', '。', '马', '天才', '🐎', '码', 'm', '滴', '顶顶'].includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
       } else {

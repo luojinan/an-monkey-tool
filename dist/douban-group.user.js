@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         豆瓣小组增强
 // @namespace    npm/vite-plugin-monkey
-// @version      1.0.7
+// @version      1.0.8
 // @author       monkey
 // @description  过滤无效评论，优化PC网页样式
 // @icon         https://img1.doubanio.com/favicon.ico
@@ -202,6 +202,8 @@
     ljq: "李佳琦",
     张大妈: "值得买",
     xyk: "信用卡",
+    ysf: "云闪付",
+    zfb: "支付宝",
     "🍚": "返利"
   };
   const fixPhone = () => {
@@ -342,7 +344,7 @@
         const removeTrailingPunctuation = /[.,!?;:“”‘’"…—，]+$/;
         content2 = content2.replace(removeLeadingPunctuation, "");
         content2 = content2.replace(removeTrailingPunctuation, "");
-        if (!content2 || ["d", "D", "牛", "，", ",", "。", "马", "天才", "🐎", "码"].includes(content2)) {
+        if (!content2 || ["d", "D", "牛", "，", ",", "。", "马", "天才", "🐎", "码", "m", "滴", "顶顶"].includes(content2)) {
           localCount++;
           (_b = (_a = dom.parentElement) == null ? void 0 : _a.parentElement) == null ? void 0 : _b.remove();
         } else {
