@@ -1,3 +1,42 @@
+# 🐵 脚本
+
+1. 提取网页中的单词并统计出现次数
+
+```js
+const noneed = ['turbopack','react','javascript','typescript','value','build','gitHub'];
+
+function extractWordsFromElement(elementId) {
+  const element = document.querySelector(elementId);
+  if (!element) {
+    console.error(`Element with ID "${elementId}" not found.`);
+    return [];
+  }
+
+  // 移除所有 <code> 标签
+  const codeElements = element.querySelectorAll('code');
+  codeElements.forEach(code => code.remove());
+
+  const text = element.textContent;
+  const regex = /[\w'-]+/g;
+  let words = text.match(regex) || [];
+
+  const wordCounts = new Map();
+  words.forEach(word => {
+    if (word.length > 4 && !noneed.includes(word.toLowerCase())) {
+      word = word.charAt(0).toLowerCase() + word.slice(1);
+      wordCounts.set(word, (wordCounts.get(word) || 0) + 1);
+    }
+  });
+
+  const sortedWords = [...wordCounts.entries()].sort((a, b) => b[1] - a[1]);
+
+  return sortedWords;
+}
+
+// 示例用法 （记得替换 "main" 为你实际的元素 ID)
+const wordCounts = extractWordsFromElement("main"); // article
+console.log(wordCounts);
+```
 
 ## init project
 
@@ -74,8 +113,8 @@ export default defineConfig({
 
 ## functions
 
-- 基建: 响应式支持移动端、PC端
-- 编辑oss的json文件上传覆盖
+- 基建：响应式支持移动端、PC 端
+- 编辑 oss 的 json 文件上传覆盖
 
 ## publish
 
