@@ -3,8 +3,6 @@
 1. 提取网页中的单词并统计出现次数
 
 ```js
-const noneed = ['turbopack','react','javascript','typescript','value','build','gitHub'];
-
 function extractWordsFromElement(elementId) {
   const element = document.querySelector(elementId);
   if (!element) {
@@ -22,7 +20,7 @@ function extractWordsFromElement(elementId) {
 
   const wordCounts = new Map();
   words.forEach(word => {
-    if (word.length > 4 && !noneed.includes(word.toLowerCase())) {
+    if (word.length > 4) {
       word = word.charAt(0).toLowerCase() + word.slice(1);
       wordCounts.set(word, (wordCounts.get(word) || 0) + 1);
     }
@@ -35,7 +33,14 @@ function extractWordsFromElement(elementId) {
 
 // 示例用法 （记得替换 "main" 为你实际的元素 ID)
 const wordCounts = extractWordsFromElement("main"); // article
-console.log(wordCounts);
+// 发起 fetch 请求获取 json https://kingan-md-img.oss-cn-guangzhou.aliyuncs.com/data/dicts/noneed.json
+fetch('https://kingan-md-img.oss-cn-guangzhou.aliyuncs.com/data/dicts/noneed.json')
+  .then(response => response.json())
+  .then(data => {
+    // data 是字符串数组，wordCounts 则是二维数组，请过滤 data
+    const afterNoneed = wordCounts.filter(word => !data.includes(word[0]))
+    console.log(afterNoneed)
+  })
 ```
 
 ## init project

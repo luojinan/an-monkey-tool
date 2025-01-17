@@ -1,4 +1,4 @@
-import { removeDomByList } from "../../common/utils";
+import { removeDomByList } from "@an-monkey-tool/utils";
 
 /**
  * 修改样式以让PC样式适应移动端
@@ -85,7 +85,7 @@ export const removeAd = () => {
  */
 export function resetOutsideDoubanLink() {
   const links = document.querySelectorAll("a");
-  links.forEach(function (link) {
+  links.forEach((link) => {
     if (link.href.startsWith("https://www.douban.com/link2/?url=")) {
       const url = new URL(link.href);
       const urlParams = new URLSearchParams(url.search);

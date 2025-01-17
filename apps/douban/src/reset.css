@@ -1,3 +1,25 @@
+
+:root {
+  /* #an-tools-api { */
+  box-sizing: border-box;
+  background-color: unset;
+  /* color-scheme: 'auto'; */
+  color-scheme: unset;
+  color: unset;
+}
+
+.article-list .title a {
+  text-decoration: none;
+  white-space: unset;
+}
+
+.topic-reply li .reply-doc p {
+  margin: 0;
+}
+.reply-quote {
+  width: unset;
+}
+
 .tabs {
   margin: unset;
 }

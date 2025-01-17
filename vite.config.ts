@@ -63,57 +63,14 @@ const anToolsConfig = {
   },
 };
 
-// 接口文档增强配置
-const apiConfig = {
-  entry: "src/packages/api/main.tsx",
-  userscript: {
-    name: "接口文档增强",
-    description: "复制接口名称",
-    icon: "https://vitejs.dev/logo.svg",
-    namespace: "npm/vite-plugin-monkey",
-    match: ["https://dsjedu.com.cn:8912/*"],
-  },
-  build: {
-    fileName: "an-tools-api.user.js",
-    externalGlobals: {
-      preact: cdn.npmmirror("preact", "dist/preact.min.js"),
-    },
-  },
-};
-
-// HTML内容提取器配置
-const htmlExtractorConfig: MonkeyOption = {
-  entry: "src/packages/html-extractor/main.tsx",
-  userscript: {
-    name: "HTML内容提取器",
-    description: "提取网页中的HTML内容",
-    icon: "https://vitejs.dev/logo.svg",
-    namespace: "npm/vite-plugin-monkey",
-    version: "1.0.0",
-    match: ["https://it.yusys.com.cn/*"],
-    // require: [
-    //   "https://code.jquery.com/jquery-2.1.4.min.js",
-    //   "https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js",
-    // ], // ?FIXME: 没生效 自定义全局库
-  },
-  build: {
-    fileName: "html-extractor.user.js",
-    externalGlobals: {
-      preact: cdn.npmmirror("preact", "dist/preact.min.js"),
-    },
-  },
-};
-
 export default defineConfig({
   build: {
     emptyOutDir: false, // 设置打包时不清空 dist 目录
   },
   plugins: [
     preact(),
-    // monkey(doubanConfig),
+    monkey(doubanConfig),
     // monkey(xianbaoConfig), // 取消注释以启用线报增强
     // monkey(anToolsConfig), // 取消注释以启用an-tool-main
-    // monkey(apiConfig), // 取消注释以启用接口文档增强
-    monkey(htmlExtractorConfig), // 取消注释以启用HTML内容提取器
   ],
 });
