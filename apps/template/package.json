@@ -1,0 +1,27 @@
+{
+  "name": "@an-monkey-tool/template",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.25.3",
+    "@an-monkey-tool/tailwind-config": "0.0.0",
+    "@an-monkey-tool/utils": "0.0.0",
+    "@an-monkey-tool/ui": "0.0.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.9.3",
+    "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.23",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vite-plugin-monkey": "^5.0.3"
+  }
+}
