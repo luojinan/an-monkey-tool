@@ -273,7 +273,7 @@ export function App() {
             htmlFor="my-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
-          ></label>
+          />
           <ul className="menu bg-base-200 text-base-content min-h-full w-4/5 p-4">
             <div class="card py-2 mb-4 shadow-md rounded-box whitespace-pre-wrap">
               {content}
