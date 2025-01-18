@@ -1,38 +1,66 @@
-import { useEffect, useState } from 'preact/hooks';
-import { NOT_NEED_LIST } from '../../douban/const';
+import { useEffect, useState } from "preact/hooks";
+
+const NOT_NEED_LIST = [
+  "日抛",
+  "精油",
+  "精华",
+  "香水",
+  "车走",
+  "面霜",
+  "身体乳",
+  "申删",
+  "母婴",
+  "隔离",
+  "美瞳",
+  "【删】",
+  "【交流】",
+  "月抛",
+  "腮红",
+  "🚗走",
+  "🚗跑",
+  "小金管",
+  "抗糖小白瓶",
+  "眼霜",
+  "面膜",
+  "气垫",
+  "双萃",
+  "双抗",
+];
 
 interface BlacklistItem {
   name: string;
   disabled: boolean;
 }
 
-const STORAGE_KEY = 'blacklist';
+const STORAGE_KEY = "blacklist";
 
 const Blacklist = ({ onRefreshList }) => {
   // 从 localStorage 获取初始数据
-  const initialData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const initialData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   const [blacklist, setBlacklist] = useState<BlacklistItem[]>(initialData);
-  const [newEntry, setNewEntry] = useState('');
+  const [newEntry, setNewEntry] = useState("");
 
   useEffect(() => {
     if (initialData.length === 0) {
-      setBlacklist(NOT_NEED_LIST.map(item => ({ name: item, disabled: false })))
-      return
+      setBlacklist(
+        NOT_NEED_LIST.map((item) => ({ name: item, disabled: false })),
+      );
+      return;
     }
-  }, [])
+  }, []);
 
   // 实时存储输入框数据到 localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(blacklist));
-    console.log('useEffect blacklist')
-    onRefreshList(blacklist.filter(item => !item.disabled))
+    console.log("useEffect blacklist");
+    onRefreshList(blacklist.filter((item) => !item.disabled));
   }, [blacklist]);
 
   const handleAdd = () => {
-    if (newEntry.trim() !== '') {
+    if (newEntry.trim() !== "") {
       const updatedList = [{ name: newEntry, disabled: true }, ...blacklist];
       setBlacklist(updatedList);
-      setNewEntry('');
+      setNewEntry("");
     }
   };
 
@@ -80,8 +108,16 @@ const Blacklist = ({ onRefreshList }) => {
             onChange={(e) => handleInputChange(index, e.target.value)}
           />
           <div className="flex items-center">
-            <input type="checkbox" className="toggle toggle-primary" checked={!item.disabled} onChange={() => handleToggleDisabled(index)} />
-            <button className="btn btn-sm btn-error ml-2" onClick={() => handleDelete(index)}>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={!item.disabled}
+              onChange={() => handleToggleDisabled(index)}
+            />
+            <button
+              className="btn btn-sm btn-error ml-2"
+              onClick={() => handleDelete(index)}
+            >
               ⌫
             </button>
           </div>
