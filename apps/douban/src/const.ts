@@ -1,6 +1,24 @@
 export const filterCommentText =
   /(d{2,})|did|Did|谢谢姐妹|滴滴|谢谢|蹲|!|！|\s|(^[a-zA-Z]+$)/gi;
 
+// 过滤后剩下的文字内容，如果全匹配以下内容，则不需要
+export const afterFilterTextNoNeed = [
+  "d",
+  "D",
+  "牛",
+  "，",
+  ",",
+  "。",
+  "马",
+  "天才",
+  "🐎",
+  "码",
+  "m",
+  "滴",
+  "顶顶",
+  "来早了"
+]
+
 export const NOT_NEED_LIST = [
   "日抛",
   "精油",
@@ -29,6 +47,7 @@ export const NOT_NEED_LIST = [
 ];
 
 export const sbCodeMap = {
+  dy: "抖音",
   jd: "京东",
   xcx: "小程序",
   tb: "淘宝",

@@ -1,12 +1,30 @@
 import { useToast } from "@an-monkey-tool/ui/ToastProvider";
 import { getUrlParams, removeDomByList } from "@an-monkey-tool/utils";
 import { useEffect, useState } from "preact/hooks";
-import { filterCommentText, sbCodeMap } from "./const";
+import { afterFilterTextNoNeed, filterCommentText, sbCodeMap } from "./const";
 import { fixPhone, removeAd, resetOutsideDoubanLink } from "./utils";
 
 type MenuItem = {
   title: string;
   onClick?: () => void;
+};
+
+const replaceSbWord = (dom) => {
+  // 遍历字典中的每个键值对
+  for (const key of Object.keys(sbCodeMap)) {
+    // 检查p标签的内容中是否包含字典的键
+    if (
+      !dom.textContent?.includes("http") &&
+      !dom.textContent?.includes(".com") &&
+      dom.textContent?.includes(key)
+    ) {
+      // 使用字典的值替换掉匹配的文本
+      dom.textContent = dom.textContent.replace(
+        new RegExp(key, "g"),
+        `${key}(${sbCodeMap[key]})`,
+      );
+    }
+  }
 };
 
 function extractRichTextContent(element: Element): string {
@@ -118,24 +136,8 @@ export function App() {
       // 移除尾字符为标点符号的部分
       content = content.replace(removeTrailingPunctuation, "");
 
-      if (
-        !content ||
-        [
-          "d",
-          "D",
-          "牛",
-          "，",
-          ",",
-          "。",
-          "马",
-          "天才",
-          "🐎",
-          "码",
-          "m",
-          "滴",
-          "顶顶",
-        ].includes(content)
-      ) {
+      // 移除后，剩下的文字仍然无效则也属于无效评论
+      if (!content || afterFilterTextNoNeed.includes(content)) {
         localCount++;
         dom.parentElement?.parentElement?.remove();
       } else {
@@ -180,7 +182,7 @@ export function App() {
     if (qaData) {
       const res = JSON.parse(qaData) as { question: string; answer: string }[];
       const list = res.filter(
-        (item) => !["dd", "d"].includes(item.answer.toLowerCase()),
+        (item) => !["dd", "d", "1"].includes(item.answer.toLowerCase()),
       );
       setQaList(list);
 
@@ -222,20 +224,7 @@ export function App() {
         );
 
         // 遍历字典中的每个键值对
-        for (const key of Object.keys(sbCodeMap)) {
-          // 检查p标签的内容中是否包含字典的键
-          if (
-            !p.textContent?.includes("http") &&
-            !p.textContent?.includes(".com") &&
-            p.textContent?.includes(key)
-          ) {
-            // 使用字典的值替换掉匹配的文本
-            p.textContent = p.textContent.replace(
-              new RegExp(key, "g"),
-              `${key}(${sbCodeMap[key]})`,
-            );
-          }
-        }
+        replaceSbWord(p);
       }
     }
   };
@@ -257,12 +246,12 @@ export function App() {
     fixPhone();
     removeAd();
     setQa();
-    // TODO: 正文内容使用替换 sbword
 
     const removedComments = removeComment();
     setCount(removedComments);
     resetOutsideDoubanLink();
-    replaceJdNum2Link();
+    replaceSbWord(document.querySelector("h1"));
+    replaceJdNum2Link(); // 正文内容使用替换 sbword
   }, []);
 
   return (
