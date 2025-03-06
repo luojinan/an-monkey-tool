@@ -5,8 +5,8 @@
 // @author       monkey
 // @description  过滤无效评论，移除广告，移除不感兴趣作业，优化跳转
 // @icon         http://new.xianbao.fun/favicon.ico
-// @match        http://new.xianbao.fun/douban-maizu/*
-// @match        http://new.xianbao.fun/category-douban-maizu/*
+// @match        *://new.xianbao.fun/douban-maizu/*
+// @match        *://new.xianbao.fun/category-douban-maizu/*
 // @require      https://registry.npmmirror.com/preact/10.25.4/files/dist/preact.min.js
 // ==/UserScript==
 

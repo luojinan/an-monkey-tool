@@ -18,8 +18,8 @@ export default defineConfig({
         icon: "http://new.xianbao.fun/favicon.ico",
         namespace: "npm/vite-plugin-monkey",
         match: [
-          "http://new.xianbao.fun/douban-maizu/*",
-          "http://new.xianbao.fun/category-douban-maizu/*",
+          "*://new.xianbao.fun/douban-maizu/*",
+          "*://new.xianbao.fun/category-douban-maizu/*",
         ],
       },
       build: {
