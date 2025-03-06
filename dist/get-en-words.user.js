@@ -368,13 +368,13 @@
     /* @__PURE__ */ u$1(ToastProvider, { children: /* @__PURE__ */ u$1(App, {}) }),
     (() => {
       const container = document.createElement("div");
-      container.id = "shadowContainer-template";
+      container.id = "shadowContainer-an";
       const shadowDom = container.attachShadow({ mode: "open" });
       const root = document.createElement("div");
       shadowDom.appendChild(root);
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(tailwindStyles);
-      shadowDom.adoptedStyleSheets = [sheet];
+      const styleTag = document.createElement("style");
+      styleTag.textContent = tailwindStyles;
+      shadowDom.appendChild(styleTag);
       document.body.appendChild(container);
       return root;
     })()
