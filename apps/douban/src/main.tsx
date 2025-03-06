@@ -2,6 +2,7 @@ import tailwindStyles from "@an-monkey-tool/tailwind-config/style.css?inline";
 import ToastProvider from "@an-monkey-tool/ui/ToastProvider";
 import { render } from "preact";
 import { App } from "./app";
+import "./reset.css";
 
 render(
   <ToastProvider>

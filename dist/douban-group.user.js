@@ -7,7 +7,10 @@
 // @icon         https://img1.doubanio.com/favicon.ico
 // @match        https://www.douban.com/group/*
 // @require      https://registry.npmmirror.com/preact/10.25.4/files/dist/preact.min.js
+// @grant        GM_addStyle
 // ==/UserScript==
+
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" :root{box-sizing:border-box;background-color:unset;color-scheme:unset;color:unset}.article-list .title a{text-decoration:none;white-space:unset}.topic-reply li .reply-doc p{margin:0}.tabs{margin:unset}.topic-reply .reply-content{margin-bottom:0}.pil{border-radius:50%}.topic-content .user-face{float:unset;display:flex;width:unset;height:unset}.topic-reply .user-face{width:36px;height:36px;margin-right:10px}.topic-reply .user-face .pil{width:36px;height:36px}.operation-div{display:none}.reply-quote{width:unset} ");
 
 (function (preact) {
   'use strict';
