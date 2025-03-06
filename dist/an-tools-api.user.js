@@ -154,7 +154,7 @@
     const [showToast, setShowToast] = h(false);
     const [name, setName] = h("");
     function generateMethodName(url, method) {
-      const segments = url.replace(/\//g, "-").replace(/\{(\w+)\}/g, "By$1").split("-").map((seg) => seg.charAt(0).toUpperCase() + seg.slice(1).toLowerCase());
+      const segments = url.replace("prod-api/", "").replace(/\//g, "-").replace(/\{(\w+)\}/g, "By$1").split("-").map((seg) => seg.charAt(0).toUpperCase() + seg.slice(1).toLowerCase());
       const methodName = `${method}${segments.join("")}`;
       return methodName;
     }
