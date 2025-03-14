@@ -14,10 +14,95 @@ function getWordStem(word: string) {
   return match ? match[1] : word;
 }
 
+const mainContentSelectors = [
+  "article",
+  ".article",
+  ".post",
+  ".content",
+  ".entry-content",
+  ".post-content",
+  ".article-content",
+  "main",
+  "#content",
+  "#main",
+  ".main",
+  ".doc-content"
+];
 
+function extractPageContent() {
+  let mainContentElement = null;
+
+  // 遍历主要内容选择器
+  for (const selector of mainContentSelectors) {
+    const elements = document.querySelectorAll(selector);
+    console.log(`使用选择器 "${selector}" 找到 ${elements.length} 个元素`);
+
+    if (elements.length > 0) {
+      let maxLength = 0;
+      let maxElement = null;
+
+      elements.forEach((element) => {
+        const textLength = element.innerText.trim().length;
+        console.log(`${selector}元素文本长度: ${textLength}`);
+        if (textLength > maxLength) {
+          maxLength = textLength;
+          maxElement = element;
+        }
+      });
+
+      if (maxElement && maxLength > 200) {
+        mainContentElement = maxElement;
+        break;
+      }
+    }
+  }
+
+  // 如果没有找到主要内容，尝试查找其他块级元素
+  if (!mainContentElement) {
+    const blockElements = document.querySelectorAll("div, section, p");
+    let maxTextLength = 0;
+    let maxTextElement = null;
+
+    blockElements.forEach((element) => {
+      if (
+        getComputedStyle(element).display === "none" ||
+        getComputedStyle(element).visibility === "hidden"
+      ) {
+        return;
+      }
+
+      const textLength = element.innerText.trim().length;
+      const density = textLength / element.innerHTML.length;
+      console.log(`块级元素文本长度: ${textLength}, 文本密度: ${density}`);
+
+      if (textLength > 200 && density > 0.25 && textLength > maxTextLength) {
+        maxTextLength = textLength;
+        maxTextElement = element;
+      }
+    });
+
+    if (maxTextElement) {
+      mainContentElement = maxTextElement;
+    }
+  }
+
+  // 如果仍然没有找到内容，使用 body 元素
+  if (!mainContentElement) {
+    console.log('未找到任何合适的内容元素，使用 body 元素');
+    mainContentElement = document.body;
+  }
+
+  return mainContentElement;
+}
 
 export function extractWordsFromElement(elementId: string): [string, number][] {
-  const element = document.querySelector(elementId);
+  let element;
+  if (elementId.startsWith("#")) {
+    element = document.querySelector(elementId);
+  } else {
+    element = extractPageContent();
+  }
+
   if (!element) {
     console.error(`Element with ID "${elementId}" not found.`);
     return [];
@@ -48,7 +133,6 @@ export function extractWordsFromElement(elementId: string): [string, number][] {
   }
 
   const sortedWords = [...wordCounts.entries()].sort((a, b) => b[1] - a[1]);
-
   return sortedWords;
 }
 

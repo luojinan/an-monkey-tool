@@ -1,31 +1,38 @@
 {
   "compilerOptions": {
+    // 指定用于存储增量编译信息的文件的路径。这有助于加快后续的构建速度。
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // 指定 ECMAScript 目标版本。ES2020 是一个较新的版本，支持现代 JavaScript 语法。
     "target": "ES2020",
+    // 使用 `define` 属性来定义类字段。
     "useDefineForClassFields": true,
+    // 指定模块代码生成方式。ESNext 允许使用最新的 JavaScript 模块语法。
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    // 指定要包含在编译中的库文件。
+    "lib": [
+      "ES2020", // 包含 ES2020 的类型定义。
+      "DOM", // 包含 DOM API 的类型定义，用于浏览器环境。
+      "DOM.Iterable" // 包含 DOM 中可迭代对象的类型定义。
+    ],
+    // 跳过对声明文件（`.d.ts`）的类型检查，以加快编译速度。
     "skipLibCheck": true,
-    "paths": {
-      "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
-    },
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "moduleResolution": "bundler", // 使用 bundler 模式进行模块解析，与 Vite 等打包工具兼容。
+    "allowImportingTsExtensions": true, // 允许在导入语句中使用 `.ts` 扩展名。
+    "isolatedModules": true, // 将每个文件作为单独的模块进行编译，与 Vite 的工作方式兼容。
+    "moduleDetection": "force", // 强制启用模块检测。
+    "noEmit": true, // 不生成输出文件（`.js`），因为 Vite 会处理代码的转换和打包。
+    "jsx": "react-jsx", // 支持 React 的 JSX 语法，并使用新的 JSX 转换方式。
     "jsxImportSource": "preact",
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "strict": true, // 启用所有严格类型检查选项，以提高代码质量。
+    "noUnusedLocals": true, // 报告未使用的局部变量。
+    "noUnusedParameters": true, // 报告未使用的函数参数。
+    "noFallthroughCasesInSwitch": true, // 防止 switch 语句中的 case 穿透。
+    "noUncheckedSideEffectImports": true // 如果导入的模块没有被使用，则发出错误。
   },
+  // 指定要包含在编译中的文件或目录。这里指定了 `src` 目录，表示包含 `src` 目录下的所有 TypeScript 文件。
   "include": ["src"]
 }

@@ -1,7 +1,11 @@
 {
+  // 指定要包含在编译中的文件列表。在这里，它是一个空数组，因为我们使用 "references" 来引用其他配置文件。
   "files": [],
+  // 指定要引用的其他 TypeScript 配置文件。这允许我们将配置拆分为多个文件，以便更好地组织和管理。
   "references": [
+    // 引用 tsconfig.app.json 文件，该文件包含应用程序代码的配置。
     { "path": "./tsconfig.app.json" },
+    // 引用 tsconfig.node.json 文件，该文件包含 Node.js 环境代码的配置。
     { "path": "./tsconfig.node.json" }
   ]
 }

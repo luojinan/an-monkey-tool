@@ -27,8 +27,8 @@ render(
     styleTag.textContent = tailwindStyles; // 直接使用导入的CSS字符串
     shadowDom.appendChild(styleTag);
 
-    //把dom附加到body去
-    document.body.appendChild(container);
+    //把dom附加到document去
+    document.documentElement.appendChild(container);
     return root;
   })(),
 );
