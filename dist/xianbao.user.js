@@ -8,7 +8,10 @@
 // @match        *://new.xianbao.fun/douban-maizu/*
 // @match        *://new.xianbao.fun/category-douban-maizu/*
 // @require      https://registry.npmmirror.com/preact/10.25.4/files/dist/preact.min.js
+// @grant        GM_addStyle
 // ==/UserScript==
+
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" .article-list.newer,.pull-right{display:none} ");
 
 (function (preact) {
   'use strict';
