@@ -1,0 +1,17 @@
+{
+  "name": "an-monkey-worker",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify"
+  },
+  "dependencies": {
+    "@prisma/adapter-d1": "^6.5.0",
+    "@prisma/client": "^6.5.0",
+    "hono": "^4.7.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "prisma": "^6.5.0",
+    "wrangler": "^3.109.2"
+  }
+}

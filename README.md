@@ -3,6 +3,7 @@
 - [xianbao](https://raw.gitmirror.com/luojinan/an-monkey-tool/main/dist/xianbao.user.js)
 - [douban](https://raw.gitmirror.com/luojinan/an-monkey-tool/main/dist/douban-group.user.js)
 - [api](https://raw.gitmirror.com/luojinan/an-monkey-tool/main/dist/an-tools-api.user.js)
+- [get-en-words](https://raw.gitmirror.com/luojinan/an-monkey-tool/main/dist/get-en-words.user.js)
 
 1. 提取网页中的单词并统计出现次数
 
