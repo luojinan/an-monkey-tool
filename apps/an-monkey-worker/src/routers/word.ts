@@ -13,10 +13,12 @@ export default (app: Hono, workspace: string) => {
     try {
       const { prismaClient } = await usePrismaClient(c)
       const body = await c.req.json()
-      const word = await prismaClient.word.create({
-        data: body
+      const data = Array.isArray(body) ? body : [body]
+
+      const words = await prismaClient.word.createMany({
+        data,
       })
-      return c.json(word)
+      return c.json(words)
     } catch (error) {
       console.error('创建单词失败:', error)
       return c.json({ error: '创建单词失败' }, 500)
