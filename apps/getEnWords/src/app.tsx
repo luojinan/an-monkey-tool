@@ -1,5 +1,6 @@
 import { useToast } from "@an-monkey-tool/ui/ToastProvider";
 import { useEffect, useState } from "preact/hooks";
+import { matchWords, uploadWord } from "./api";
 import { extractWordsFromElement, filterWords } from "./utils";
 
 export function App() {
@@ -8,15 +9,39 @@ export function App() {
   const [words, setWords] = useState<[string, number][]>([]);
   const [totalWords, setTotalWords] = useState(0);
   const [filteredWords, setFilteredWords] = useState(0);
+  const [knownWordsCount, setKnownWordsCount] = useState(0);
 
   const getWords = async () => {
-    const words = extractWordsFromElement("");
-    setTotalWords(words.length);
-    const afterFilteredWords = await filterWords(words);
-    setFilteredWords(words.length - afterFilteredWords.length);
-    setWords(afterFilteredWords);
-    console.log(afterFilteredWords);
-    showToast("🎉 单词获取成功");
+    try {
+      // 从页面提取单词
+      const extractedWords = extractWordsFromElement("");
+      setTotalWords(extractedWords.length);
+
+      // 第一次过滤（本地过滤）
+      const afterLocalFiltered = await filterWords(extractedWords);
+      const localFilteredCount =
+        extractedWords.length - afterLocalFiltered.length;
+
+      // 第二次过滤（数据库匹配）
+      const wordsForMatching = afterLocalFiltered.map(([word]) => word);
+      const matchResult = await matchWords(wordsForMatching);
+
+      // 更新统计信息
+      setKnownWordsCount(matchResult.knownWordsCount);
+      setFilteredWords(localFilteredCount + matchResult.knownWordsCount);
+
+      // 只保留未知单词
+      const unknownWordsSet = new Set(matchResult.unknownWords);
+      const finalWordList = afterLocalFiltered.filter(([word]) =>
+        unknownWordsSet.has(word.toLowerCase()),
+      );
+
+      setWords(finalWordList);
+      showToast("🎉 单词获取成功");
+    } catch (error) {
+      console.error("获取单词失败:", error);
+      showToast("❌ 获取单词失败");
+    }
   };
 
   const exportWords = () => {
@@ -72,6 +97,10 @@ export function App() {
                 <div className="stat">
                   <div className="stat-title">已认识</div>
                   <div className="stat-value">{filteredWords}</div>
+                  <div className="stat-desc">
+                    本地: {filteredWords - knownWordsCount} | 数据库:{" "}
+                    {knownWordsCount}
+                  </div>
                 </div>
                 <div className="stat">
                   <button
@@ -102,10 +131,16 @@ export function App() {
                         <td>
                           <button
                             className="btn btn-error btn-sm"
-                            onClick={() => {
-                              setWords(words.filter(([w]) => w !== word));
-                              setFilteredWords(filteredWords + 1);
-                              showToast(`🎉 已删除单词: ${word}`);
+                            onClick={async () => {
+                              try {
+                                await uploadWord(word);
+                                setWords(words.filter(([w]) => w !== word));
+                                setFilteredWords(filteredWords + 1);
+                                showToast(`🎉 已删除单词: ${word}`);
+                              } catch (error) {
+                                showToast(`❌ 删除单词失败: ${word}`);
+                                console.error(error);
+                              }
                             }}
                           >
                             删除
