@@ -21,3 +21,22 @@ model Word {
   origin  String?
   createdAt DateTime @default(now())
 }
+
+model Income {
+  id            String   @id @default(uuid())
+  owner         String   // 归属人
+  time          DateTime   // Format: "YYYY.MM"
+  baseSalary    Float    // 基本工资
+  overtimeMeal  Float    // 加班饭补
+  housingFund   Float    // 提取公积金
+  leaveDeduction Float   // 事假
+  housingFundDeduction Float // 公积金
+  medicalInsurance Float // 医疗保险
+  pensionInsurance Float // 养老保险
+  unemploymentInsurance Float // 失业保险
+  tax           Float    // 扣税
+  rent          Float    // 房租
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
