@@ -3,6 +3,7 @@
   "name": "an-monkey-worker",
   "main": "src/index.ts",
   "compatibility_date": "2025-03-17",
+  "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
       "binding": "DB",
@@ -10,9 +11,6 @@
       "database_id": "424b8698-0f13-4803-8bbd-f865009dc87b"
     }
   ]
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },

@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from "hono/cors";
+import income from './routers/income'
 import word from './routers/word'
 
 // type Bindings = {
@@ -12,9 +13,7 @@ const app = new Hono().basePath('/api')
 app.use(
   "*",
   cors({
-    origin: "*",
-    headers: ["Content-Type", "Access-Control-Allow-Origin"],
-    methods: ["GET", "POST", "OPTIONS"]
+    origin: "*"
   })
 );
 
@@ -25,6 +24,7 @@ app.delete('/', (c) => c.text('DELETE /'))
 
 // routes
 word(app, '/word')
+income(app, '/income')
 
 app.notFound((c) => {
   return c.text('Custom 404 Message', 404)

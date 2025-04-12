@@ -1,6 +1,8 @@
 
 `https://monkey.5675675.xyz/api/word/`
 
+`https://monkey.5675675.xyz/api/income/?owner=luo`
+
 在cloudflare上，应该进入worker查看运行情况，而不是看d1的运行情况，d1只用于可视化查看数据库表的内容
 
 TODO:
