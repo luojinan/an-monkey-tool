@@ -18,7 +18,7 @@ export default defineConfig({
         description: "复制接口名称",
         icon: "https://vitejs.dev/logo.svg",
         namespace: "npm/vite-plugin-monkey",
-        match: ["https://dsjedu.com.cn/prod-api/doc.html", "http://tenvia.cn/prod-api/doc.html"],
+        match: ["https://dsjedu.com.cn/prod-api/doc.html", "https://tenvia.cn/prod-api/doc.html"],
       },
       build: {
         fileName: "an-tools-api.user.js",

@@ -6,7 +6,7 @@
 // @description  复制接口名称
 // @icon         https://vitejs.dev/logo.svg
 // @match        https://dsjedu.com.cn/prod-api/doc.html
-// @match        http://tenvia.cn/prod-api/doc.html
+// @match        https://tenvia.cn/prod-api/doc.html
 // @require      https://registry.npmmirror.com/preact/10.25.4/files/dist/preact.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
