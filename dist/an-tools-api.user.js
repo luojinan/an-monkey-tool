@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         接口文档增强
 // @namespace    npm/vite-plugin-monkey
-// @version      0.0.1
+// @version      1.0.0
 // @author       monkey
 // @description  复制接口名称
 // @icon         https://vitejs.dev/logo.svg
 // @match        https://dsjedu.com.cn/prod-api/doc.html
+// @match        http://tenvia.cn/prod-api/doc.html
 // @require      https://registry.npmmirror.com/preact/10.25.4/files/dist/preact.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
