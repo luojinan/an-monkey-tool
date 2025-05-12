@@ -15,6 +15,7 @@ export default defineConfig({
       userscript: {
         name: "线报增强",
         description: "过滤无效评论，移除广告，移除不感兴趣作业，优化跳转",
+        version: "1.0.0",
         icon: "http://new.xianbao.fun/favicon.ico",
         namespace: "npm/vite-plugin-monkey",
         match: [
