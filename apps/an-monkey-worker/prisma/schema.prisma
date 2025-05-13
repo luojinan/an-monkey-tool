@@ -40,3 +40,15 @@ model Income {
   updatedAt     DateTime @updatedAt
 }
 
+model PartTime {
+  id          String   @id @default(uuid())
+  date        String   // 工作日期（格式：YYYY-MM-DD）
+  timestamp   BigInt   // 时间戳
+  hours       Float    // 工作小时数
+  project     String   // 项目名称
+  description String   // 工作描述
+  personnel   String   // 人员
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

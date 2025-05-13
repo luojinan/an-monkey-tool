@@ -1,0 +1,83 @@
+
+## AI Coding Assistant Rules
+
+## TECH STACK
+
+- Node.js
+- Prisma
+- TypeScript
+- Cloudflare Workers
+- Wrangler
+- SQLite
+- `@prisma/adapter-d1`
+- `dotenv`
+- `hono`
+
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+- All interactions with the AI coding assistant are logged and versioned (e.g., 2025-04-03_07-41-writing-csv-data-to-local-file.md).
+- Version updates are noted in relevant sections (e.g., TECH STACK, WORKFLOW & RELEASE RULES).  Prisma version 6.6.0 is currently in use.  Wrangler version 4.10.0 is currently in use.
+
+
+## CODING STANDARDS
+
+- Use consistent formatting (e.g., UTF-8 encoding for CSV files).
+- Avoid global formatting of Markdown code blocks.  Use `$" ... "$` or HTML entity encoding (e.g., `&#44;`) to protect code blocks from unintended formatting by Markdown formatting plugins.
+- When importing built-in Node.js modules, use the `node:` protocol (e.g., `import fs from 'node:fs';`).
+
+
+## WORKFLOW & RELEASE RULES
+
+- To deploy updated workers, use `pnpm wrangler deploy` after ensuring you are in the correct project directory (`cd apps/an-monkey-worker`).
+- Add the `"nodejs_compat"` flag to the `"compatibility_flags"` array in `wrangler.jsonc` to resolve compatibility issues with built-in Node.js modules.
+
+
+## DEBUGGING
+
+- When encountering TypeScript import errors, check for missing dependencies (e.g., `dotenv`) and correct import paths.  Use `npm list` to check package versions.
+- Address type mismatches in Prisma configurations by reviewing the Prisma documentation for the correct types and configuration options for your Prisma version.  Consider upgrading Prisma when a compatible version is released.
+- When dealing with errors related to column value mismatch in SQLite, verify that the number of values supplied matches the number of columns in the table.  Use explicit column names in INSERT statements and `json_extract` to map JSON fields to columns.
+
+
+## DATABASE SCHEMA & DATA HANDLING
+
+- The `Income` table should have the following columns: `id` (TEXT, PRIMARY KEY), `owner` (TEXT, NOT NULL), `time` (DATETIME), `baseSalary` (REAL, NOT NULL), `overtimeMeal` (REAL, NOT NULL), `housingFund` (REAL, NOT NULL), `leaveDeduction` (REAL, NOT NULL), `housingFundDeduction` (REAL, NOT NULL), `medicalInsurance` (REAL, NOT NULL), `pensionInsurance` (REAL, NOT NULL), `unemploymentInsurance` (REAL, NOT NULL), `tax` (REAL, NOT NULL), `rent` (REAL, NOT NULL), `createdAt` (DATETIME, DEFAULT CURRENT_TIMESTAMP), `updatedAt` (DATETIME, DEFAULT CURRENT_TIMESTAMP). An index should be added on the `time` column.
+- Use `DateTime` type for the `time` field in the Prisma schema for easier sorting and querying.
+- When importing JSON data into Cloudflare D1, use Wrangler's `d1 execute` command with a carefully constructed SQL statement to ensure correct field mapping.  Consider batching large imports for better performance.  A sample command is:
+```bash
+npx wrangler d1 execute an-monkey-db \
+  --command="INSERT INTO Income (id, owner, time, baseSalary, overtimeMeal, housingFund, leaveDeduction, housingFundDeduction, medicalInsurance, pensionInsurance, unemploymentInsurance, tax, rent, createdAt, updatedAt) 
+  SELECT 
+    json_extract(value, '$.id'),
+    json_extract(value, '$.owner'),
+    json_extract(value, '$.time'),
+    json_extract(value, '$.baseSalary'),
+    json_extract(value, '$.overtimeMeal'),
+    json_extract(value, '$.housingFund'),
+    json_extract(value, '$.leaveDeduction'),
+    json_extract(value, '$.housingFundDeduction'),
+    json_extract(value, '$.medicalInsurance'),
+    json_extract(value, '$.pensionInsurance'),
+    json_extract(value, '$.unemploymentInsurance'),
+    json_extract(value, '$.tax'),
+    json_extract(value, '$.rent'),
+    json_extract(value, '$.createdAt'),
+    json_extract(value, '$.updatedAt')
+  FROM json_each('$(cat processed-income-data.json)')" --remote
+```
+
+## API ENDPOINTS
+
+- `/word`: Existing endpoint for word-related operations.
+- `/income`: New endpoint to query income data. Accepts `owner` query parameter, returns data sorted by `time` (descending).
+
+
+## BEST PRACTICES
+
+- Always validate user inputs to prevent errors and security vulnerabilities.
+- Handle errors gracefully and provide informative error messages.
+- Use appropriate data types for database fields.
+- Add indexes to frequently queried fields to improve performance.
+- Consider using batch operations for large data imports.
+- Test changes thoroughly before deploying to production.

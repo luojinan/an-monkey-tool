@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from "hono/cors";
 import income from './routers/income'
+import partTime from './routers/part-time'
 import word from './routers/word'
 
 // type Bindings = {
@@ -25,6 +26,7 @@ app.delete('/', (c) => c.text('DELETE /'))
 // routes
 word(app, '/word')
 income(app, '/income')
+partTime(app, '/part-time')
 
 app.notFound((c) => {
   return c.text('Custom 404 Message', 404)
