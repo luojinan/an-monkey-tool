@@ -1,6 +1,12 @@
 .article-list.newer {
   display: none;
 }
+
 .pull-right {
   display: none
+}
+
+.article-list .title a {
+  text-decoration: none;
+  white-space: unset;
 }
