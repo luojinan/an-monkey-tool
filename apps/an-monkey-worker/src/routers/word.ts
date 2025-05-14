@@ -2,14 +2,14 @@ import type { Context, Hono } from "hono";
 import { usePrismaClient } from "../../prisma/utils/prismaClient";
 
 export default (app: Hono, workspace: string) => {
-  app.get(`${workspace}/`, async (c: Context) => {
+  app.get(`${workspace}`, async (c: Context) => {
     const { prismaClient } = await usePrismaClient(c);
     const words = await prismaClient.word.findMany();
     console.log("word", words);
     return c.json(words);
   });
 
-  app.post(`${workspace}/`, async (c: Context) => {
+  app.post(`${workspace}`, async (c: Context) => {
     try {
       const { prismaClient } = await usePrismaClient(c);
       const body = await c.req.json();
@@ -29,7 +29,7 @@ export default (app: Hono, workspace: string) => {
   app.post(`${workspace}/match`, async (c: Context) => {
     try {
       const { prismaClient } = await usePrismaClient(c);
-      const body = await c.req.json();
+      const body = await c.req.json() as { words: string[] };
 
       // 验证请求体中是否包含单词列表
       if (!body.words || !Array.isArray(body.words)) {
@@ -47,8 +47,7 @@ export default (app: Hono, workspace: string) => {
       const knownWords = await prismaClient.word.findMany({
         where: {
           word: {
-            in: uniqueArticleWords.map((w) => w.toLowerCase()),
-            mode: "insensitive", // 不区分大小写
+            in: uniqueArticleWords.map((w: string) => w.toLowerCase()),
           },
         },
         select: { word: true },
@@ -61,7 +60,7 @@ export default (app: Hono, workspace: string) => {
 
       // 找出未知单词（从去重后的单词列表中查找）
       const uniqueUnknownWords = uniqueArticleWords.filter(
-        (word) => !knownWordsSet.has(word),
+        (word: string) => !knownWordsSet.has(word),
       );
 
       // 计算已知单词数量（需要在原始列表中计算）

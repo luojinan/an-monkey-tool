@@ -2,7 +2,7 @@ import type { Context, Hono } from "hono";
 import { usePrismaClient } from "../../prisma/utils/prismaClient";
 
 export default (app: Hono, workspace: string) => {
-  app.get(`${workspace}/`, async (c: Context) => {
+  app.get(`${workspace}`, async (c: Context) => {
     try {
       const { prismaClient } = await usePrismaClient(c);
       const owner = c.req.query('owner');

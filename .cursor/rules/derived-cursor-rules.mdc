@@ -44,6 +44,17 @@ globs: *
     5. Verify API endpoint accessibility
     6. Execute database migration commands if necessary.
 - When importing data, ensure date fields are correctly formatted as DATETIME for SQLite compatibility.  Incorrect formatting can lead to errors in date-based ordering.
+- **Local Debugging of `/parttime` Worker (added 2025-05-13):** Ensure that the `where` and `orderBy` clauses in the `/parttime` route are correctly implemented to filter and sort results based on the `personnel` query parameter.  Review the code for any commented-out sections that might be affecting functionality. Use `pnpm run dev` to start the local development server.  Test the API endpoint at `http://localhost:8787/api/parttime?personnel=personnel_name`.
+- **Database Migration (added 2025-05-13):** After schema changes, run `npx wrangler d1 execute an-monkey-db --file=./migrations/[migration_file_name].sql --remote` to apply migrations to the remote D1 database.  If using a local SQLite database for development, ensure the appropriate migration commands are executed for the local environment.  Verify migration success using `npx wrangler d1 execute an-monkey-db --command="SELECT name FROM sqlite_master WHERE type='table';" --remote` and `npx wrangler d1 execute an-monkey-db --command="PRAGMA table_info(PartTime);" --remote`. Restart the local development server (`pnpm run dev`) after applying migrations.
+- **Route Path Definition (added 2025-05-13):**  Remove trailing slashes from route path definitions in router files (e.g., `part-time.ts`, `income.ts`, `word.ts`).  Use `${workspace}` instead of `${workspace}/` to avoid requiring trailing slashes in API endpoint URLs.
+- **Applying Migrations (added 2025-05-13):**  Always apply database migrations after schema changes using `npx wrangler d1 execute an-monkey-db --file=./migrations/[migration_file_name].sql --remote`. Verify successful migration using `npx wrangler d1 execute an-monkey-db --command="SELECT name FROM sqlite_master WHERE type='table';" --remote` and `npx wrangler d1 execute an-monkey-db --command="PRAGMA table_info(PartTime);" --remote`. Restart the local development server after applying migrations.
+- **Local Environment Setup (added 2025-05-13):** Create a `.env` file in the `apps/an-monkey-worker` directory to configure the local SQLite database for development.  This is necessary for local development and testing.  The `.env` file should contain the `DATABASE_URL` pointing to the local SQLite database file.  Example: `DATABASE_URL="file:./.wrangler/state/v3/d1/miniflare-D1DatabaseObject/1cea9eebaf31c8ae84ba91fbc0bba93dc7a57a1814bd437b6d7284abdb3b3115.sqlite"`
+- **Local vs Remote Databases (added 2025-05-14):** Ensure that migrations are applied to both the local and remote databases.  The presence of data in the remote D1 database does not guarantee its presence in the local development database. Always run migration commands for both environments after schema changes.  Use `npx wrangler d1 execute an-monkey-db --file=./migrations/[migration_file_name].sql --local` for local migrations.
+- **Local Database Migration (added 2025-05-14):** To ensure consistency between local and remote D1 databases, always apply migrations to both environments after schema changes. Use `npx wrangler d1 execute an-monkey-db --file=./migrations/[migration_file_name].sql --local` for local migrations and `npx wrangler d1 execute an-monkey-db --file=./migrations/[migration_file_name].sql --remote` for remote migrations.
+- **Local Database Setup (added 2025-05-14):** To set up the local database, execute the following commands:
+    1. `cd apps/an-monkey-worker`
+    2. `echo 'DATABASE_URL="file:./.wrangler/state/v3/d1/miniflare-D1DatabaseObject/1cea9eebaf31c8ae84ba91fbc0bba93dc7a57a1814bd437b6d7284abdb3b3115.sqlite"' > .env`
+    3. `npx wrangler d1 execute an-monkey-db --file=./migrations/add_part_time_model.sql --local`
 
 
 ## DEBUGGING
@@ -53,6 +64,12 @@ globs: *
 - When dealing with errors related to column value mismatch in SQLite, verify that the number of values supplied matches the number of columns in the table.  Use explicit column names in INSERT statements and `json_extract` to map JSON fields to columns.
 - If encountering "Property 'partTime' does not exist" errors in TypeScript, this is likely due to type checking issues after Prisma schema updates.  Regenerating the Prisma client (`npx prisma generate`) may resolve the issue; however, this does not affect the actual deployment.  This error may persist until the IDE or TypeScript server refreshes.
 - If encountering errors related to ordering by date fields in the PartTime model, ensure the date field is correctly formatted as DATETIME in both the database and the import script. Consider using the timestamp field for ordering if date formatting issues persist.
+- When encountering errors related to ordering by date fields in the PartTime model, ensure the `date` field is correctly formatted as DATETIME in the database and the import script.  If issues persist, use the `timestamp` field for ordering.
+- When debugging, review the schema file (`schema.prisma`) and the relevant route files (e.g., `/parttime` route) for inconsistencies or errors.
+- If encountering a "D1_ERROR: no such table: main.PartTime: SQLITE_ERROR", ensure the `PartTime` table has been created in the database by applying the necessary migration using `npx wrangler d1 execute an-monkey-db --file=./migrations/add_part_time_model.sql --remote`. Verify table creation with `npx wrangler d1 execute an-monkey-db --command="SELECT name FROM sqlite_master WHERE type='table';" --remote`.  Verify table structure with `npx wrangler d1 execute an-monkey-db --command="PRAGMA table_info(PartTime);" --remote`.  Restart the local development server after applying migrations.
+- Add comprehensive logging statements (e.g., `console.log`) to track data flow and identify potential issues during development and debugging.
+- When serializing data for JSON responses, ensure that BigInt types are converted to Number types to avoid serialization errors.  This can be done using `Number(BigIntValue)` within the relevant route handler.
+- **BigInt Serialization (added 2025-05-14):** When working with BigInt types (like timestamps), ensure they are converted to Number types before serializing to JSON to avoid errors. Use `Number(BigIntValue)` for conversion.  If precision is critical, consider using a string conversion or a dedicated big number library.
 
 
 ## DATABASE SCHEMA & DATA HANDLING
@@ -81,7 +98,7 @@ npx wrangler d1 execute an-monkey-db \
     json_extract(value, '$.updatedAt')
   FROM json_each('$(cat processed-income-data.json)')" --remote
 ```
-- Add a new model, `PartTime`, to record part-time work hours.  The data structure should be: `{ "date": "YYYY-MM-DD", "timestamp": (unix timestamp in milliseconds), "hours": (number), "project": (string), "description": (string), "personnel": (string) }`.  The `PartTime` table should include indexes on `personnel` and `date` columns for optimized querying. Implement a server route similar to `/income` for querying `PartTime` data.  The `/parttime` endpoint should accept a `personnel` query parameter and return data sorted by `date` (descending) or `timestamp` (descending) as a fallback.  For initial data population of the `PartTime` table, a SQL script should be used with `npx wrangler d1 execute` for efficient batch insertion.  Ensure that the `date` field is correctly formatted as DATETIME in the database and import scripts.
+- Add a new model, `PartTime`, to record part-time work hours.  The data structure should be: `{ "date": "YYYY-MM-DD", "timestamp": (unix timestamp in milliseconds), "hours": (number), "project": (string), "description": (string), "personnel": (string) }`.  The `PartTime` table should include indexes on `personnel` and `date` columns for optimized querying. Implement a server route similar to `/income` for querying `PartTime` data.  The `/parttime` endpoint should accept a `personnel` query parameter and return data sorted by `date` (descending) or `timestamp` (descending) as a fallback.  For initial data population of the `PartTime` table, a SQL script should be used with `npx wrangler d1 execute` for efficient batch insertion.  Ensure that the `date` field is correctly formatted as DATETIME in the database and import scripts.  The `date` field in the `PartTime` model is now a `String` type to match the data import format.  For improved performance and to avoid BigInt serialization issues, consider using an `Int` type for the `timestamp` field instead of `BigInt`.
 
 
 ## API ENDPOINTS
@@ -95,7 +112,7 @@ npx wrangler d1 execute an-monkey-db \
 
 - Always validate user inputs to prevent errors and security vulnerabilities.
 - Handle errors gracefully and provide informative error messages.
-- Use appropriate data types for database fields.
+- Use appropriate data types for database fields.  Consider using `Int` instead of `BigInt` for timestamps that fall within the JavaScript Number safe integer range.
 - Add indexes to frequently queried fields to improve performance.
 - Consider using batch operations for large data imports.
 - Test changes thoroughly before deploying to production.
