@@ -55,3 +55,7 @@
 .reply-quote {
   width: unset;
 }
+
+.cmt-img-large img {
+  width: 100%;
+}

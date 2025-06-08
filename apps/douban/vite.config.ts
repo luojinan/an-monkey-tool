@@ -14,6 +14,7 @@ export default defineConfig({
       entry: 'src/main.tsx',
       userscript: {
         name: "豆瓣小组增强",
+        version: "1.1.1",
         description: "过滤无效评论，优化PC网页样式",
         icon: "https://img1.doubanio.com/favicon.ico",
         namespace: "npm/vite-plugin-monkey",

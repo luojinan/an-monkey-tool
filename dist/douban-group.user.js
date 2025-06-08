@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         豆瓣小组增强
 // @namespace    npm/vite-plugin-monkey
-// @version      1.1.0
+// @version      1.1.1
 // @author       monkey
 // @description  过滤无效评论，优化PC网页样式
 // @icon         https://img1.doubanio.com/favicon.ico
@@ -10,7 +10,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" :root{box-sizing:border-box;background-color:unset;color-scheme:unset;color:unset}.article-list .title a{text-decoration:none;white-space:unset}.topic-reply li .reply-doc p{margin:0}.tabs{margin:unset}.topic-reply .reply-content{margin-bottom:0}.pil{border-radius:50%}.topic-content .user-face{float:unset;display:flex;width:unset;height:unset}.topic-reply .user-face{width:36px;height:36px;margin-right:10px}.topic-reply .user-face .pil{width:36px;height:36px}.operation-div{display:none}.reply-quote{width:unset} ");
+(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" :root{box-sizing:border-box;background-color:unset;color-scheme:unset;color:unset}.article-list .title a{text-decoration:none;white-space:unset}.topic-reply li .reply-doc p{margin:0}.tabs{margin:unset}.topic-reply .reply-content{margin-bottom:0}.pil{border-radius:50%}.topic-content .user-face{float:unset;display:flex;width:unset;height:unset}.topic-reply .user-face{width:36px;height:36px;margin-right:10px}.topic-reply .user-face .pil{width:36px;height:36px}.operation-div{display:none}.reply-quote{width:unset}.cmt-img-large img{width:100%} ");
 
 (function (preact) {
   'use strict';
